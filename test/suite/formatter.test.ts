@@ -173,6 +173,40 @@ describe('Sirius Alignment Formatter', () => {
     assert.equal(formatCode(input, undefined, 'typescriptreact'), expected);
   });
 
+  it('keeps boolean JSX props aligned with props that start on the opening element line', () => {
+    const input = [
+      'const view = (',
+      '        <Table {...{cols, rows, EmptyElement, ...restTableProps}}',
+      '               className            = {block}',
+      '               uischema             = {defaultUiSchema}',
+      '               checkedRows          = {[]}',
+      '               RowEditElement       = {RowEditElement}',
+      '               hasRowEditStickyLast',
+      '               closeEditOnScroll',
+      '               hardWidthDisabled',
+      '        />',
+      ')',
+      ''
+    ].join('\n');
+
+    const expected = [
+      'const view = (',
+      '        <Table {...{cols, rows, EmptyElement, ...restTableProps}}',
+      '               className      = {block}',
+      '               uischema       = {defaultUiSchema}',
+      '               checkedRows    = {[]}',
+      '               RowEditElement = {RowEditElement}',
+      '               hasRowEditStickyLast',
+      '               closeEditOnScroll',
+      '               hardWidthDisabled',
+      '        />',
+      ');',
+      ''
+    ].join('\n');
+
+    assert.equal(formatCode(input, undefined, 'typescriptreact'), expected);
+  });
+
   it('aligns consecutive variable declarations with typed hook initializers', () => {
     const input = [
       'const [allCols, setAllCols] = useState<Array<Column>>(getColsByTable(table));',

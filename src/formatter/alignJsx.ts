@@ -17,6 +17,14 @@ interface AlignableJsxAttribute {
   valueStart: number;
 }
 
+interface JsxAttributeLine {
+  lineNumber: number;
+  lineStart: number;
+  lineEnd: number;
+  attributeStart: number;
+  shouldAlignEqualSign: boolean;
+}
+
 export function alignJsxProps(text: string, ast: AnyNode): string {
   const lineStarts = getLineStarts(text);
   const changes: TextChange[] = [];
@@ -27,12 +35,19 @@ export function alignJsxProps(text: string, ast: AnyNode): string {
     }
 
     const propStartColumn = getPropStartColumn(node);
+    const attributeLines = node.attributes
+      .map((attribute: AnyNode) => toJsxAttributeLine(text, attribute, lineStarts))
+      .filter((attribute): attribute is JsxAttributeLine => Boolean(attribute));
     const attributes = node.attributes
       .map((attribute: AnyNode) => toAlignableJsxAttribute(text, attribute, lineStarts, propStartColumn))
       .filter((attribute): attribute is AlignableJsxAttribute => Boolean(attribute));
 
     for (const group of splitConsecutiveGroups(attributes)) {
       changes.push(...alignJsxGroup(text, group));
+    }
+
+    if (propStartColumn !== null) {
+      changes.push(...alignNonValuedJsxAttributeIndents(text, attributeLines, propStartColumn));
     }
   });
 
@@ -85,6 +100,27 @@ function toAlignableJsxAttribute(
   };
 }
 
+function toJsxAttributeLine(text: string, attribute: AnyNode, lineStarts: number[]): JsxAttributeLine | null {
+  if (!attribute.loc || typeof attribute.start !== 'number' || typeof attribute.end !== 'number') {
+    return null;
+  }
+
+  if (attribute.loc.start.line !== attribute.loc.end.line) {
+    return null;
+  }
+
+  const lineNumber = attribute.loc.start.line - 1;
+  const [lineStart, lineEnd] = getLineBounds(text, lineNumber, lineStarts);
+
+  return {
+    lineNumber,
+    lineStart,
+    lineEnd,
+    attributeStart: attribute.start,
+    shouldAlignEqualSign: attribute.type === 'JSXAttribute' && Boolean(attribute.value)
+  };
+}
+
 function alignJsxGroup(text: string, group: AlignableJsxAttribute[]): TextChange[] {
   if (group.length === 0) {
     return [];
@@ -102,6 +138,41 @@ function alignJsxGroup(text: string, group: AlignableJsxAttribute[]): TextChange
       text: `${attribute.prefix}${attribute.name}${padding}= ${value}`
     };
   });
+}
+
+function alignNonValuedJsxAttributeIndents(
+  text: string,
+  attributes: JsxAttributeLine[],
+  propStartColumn: number
+): TextChange[] {
+  const targetPrefix = ' '.repeat(propStartColumn);
+  const changes: TextChange[] = [];
+
+  for (const group of splitConsecutiveGroups(attributes)) {
+    if (!group.some((attribute) => attribute.shouldAlignEqualSign)) {
+      continue;
+    }
+
+    for (const attribute of group) {
+      if (attribute.shouldAlignEqualSign) {
+        continue;
+      }
+
+      const currentPrefix = text.slice(attribute.lineStart, attribute.attributeStart);
+
+      if (currentPrefix === targetPrefix || currentPrefix.trim().length > 0) {
+        continue;
+      }
+
+      changes.push({
+        start: attribute.lineStart,
+        end: attribute.lineEnd,
+        text: `${targetPrefix}${text.slice(attribute.attributeStart, attribute.lineEnd)}`
+      });
+    }
+  }
+
+  return changes;
 }
 
 function splitConsecutiveGroups<T extends { lineNumber: number }>(items: T[]): T[][] {

@@ -11,11 +11,17 @@ function alignJsxProps(text, ast) {
             return;
         }
         const propStartColumn = getPropStartColumn(node);
+        const attributeLines = node.attributes
+            .map((attribute) => toJsxAttributeLine(text, attribute, lineStarts))
+            .filter((attribute) => Boolean(attribute));
         const attributes = node.attributes
             .map((attribute) => toAlignableJsxAttribute(text, attribute, lineStarts, propStartColumn))
             .filter((attribute) => Boolean(attribute));
         for (const group of splitConsecutiveGroups(attributes)) {
             changes.push(...alignJsxGroup(text, group));
+        }
+        if (propStartColumn !== null) {
+            changes.push(...alignNonValuedJsxAttributeIndents(text, attributeLines, propStartColumn));
         }
     });
     return (0, print_1.applyTextChanges)(text, changes);
@@ -52,6 +58,23 @@ function toAlignableJsxAttribute(text, attribute, lineStarts, propStartColumn) {
         valueStart: attribute.value.start
     };
 }
+function toJsxAttributeLine(text, attribute, lineStarts) {
+    if (!attribute.loc || typeof attribute.start !== 'number' || typeof attribute.end !== 'number') {
+        return null;
+    }
+    if (attribute.loc.start.line !== attribute.loc.end.line) {
+        return null;
+    }
+    const lineNumber = attribute.loc.start.line - 1;
+    const [lineStart, lineEnd] = (0, print_1.getLineBounds)(text, lineNumber, lineStarts);
+    return {
+        lineNumber,
+        lineStart,
+        lineEnd,
+        attributeStart: attribute.start,
+        shouldAlignEqualSign: attribute.type === 'JSXAttribute' && Boolean(attribute.value)
+    };
+}
 function alignJsxGroup(text, group) {
     if (group.length === 0) {
         return [];
@@ -66,6 +89,30 @@ function alignJsxGroup(text, group) {
             text: `${attribute.prefix}${attribute.name}${padding}= ${value}`
         };
     });
+}
+function alignNonValuedJsxAttributeIndents(text, attributes, propStartColumn) {
+    const targetPrefix = ' '.repeat(propStartColumn);
+    const changes = [];
+    for (const group of splitConsecutiveGroups(attributes)) {
+        if (!group.some((attribute) => attribute.shouldAlignEqualSign)) {
+            continue;
+        }
+        for (const attribute of group) {
+            if (attribute.shouldAlignEqualSign) {
+                continue;
+            }
+            const currentPrefix = text.slice(attribute.lineStart, attribute.attributeStart);
+            if (currentPrefix === targetPrefix || currentPrefix.trim().length > 0) {
+                continue;
+            }
+            changes.push({
+                start: attribute.lineStart,
+                end: attribute.lineEnd,
+                text: `${targetPrefix}${text.slice(attribute.attributeStart, attribute.lineEnd)}`
+            });
+        }
+    }
+    return changes;
 }
 function splitConsecutiveGroups(items) {
     const groups = [];
