@@ -46,7 +46,7 @@ export function deactivate(): void {
 }
 
 function readFormatterSettings(): FormatterSettings {
-  const config = vscode.workspace.getConfiguration('alignedStyleFormatter');
+  const config = vscode.workspace.getConfiguration('siriusAlignmentFormatter');
 
   return normalizeSettings({
     enable: config.get<boolean>('enable'),

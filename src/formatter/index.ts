@@ -1,7 +1,9 @@
 import { alignEnums } from './alignEnum';
 import { alignJsxProps } from './alignJsx';
 import { alignObjects } from './alignObject';
+import { alignVariables } from './alignVariables';
 import { formatImports } from './importLayout';
+import { formatIndentation } from './indentation';
 import { parseCode, type ParseResult } from './parse';
 import {
   detectEndOfLine,
@@ -53,8 +55,10 @@ export function formatCode(source: string, settings?: Partial<FormatterSettings>
 
 function getFormatterPasses(settings: FormatterSettings): FormatterPass[] {
   const passes: FormatterPass[] = [
+    (text) => formatIndentation(text),
     (text, parseResult) => formatImports(text, parseResult.ast, settings),
-    (text, parseResult) => alignEnums(text, parseResult.ast)
+    (text, parseResult) => alignEnums(text, parseResult.ast),
+    (text, parseResult) => alignVariables(text, parseResult.ast)
   ];
 
   if (settings.alignObjects) {

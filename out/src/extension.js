@@ -68,7 +68,7 @@ function deactivate() {
     // VS Code disposes registered providers through extension subscriptions.
 }
 function readFormatterSettings() {
-    const config = vscode.workspace.getConfiguration('alignedStyleFormatter');
+    const config = vscode.workspace.getConfiguration('siriusAlignmentFormatter');
     return (0, settings_1.normalizeSettings)({
         enable: config.get('enable'),
         importFromMinColumn: config.get('importFromMinColumn'),

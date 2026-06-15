@@ -91,7 +91,7 @@ function hasSemicolon(text: string, end: number): boolean {
 
   let index = end;
 
-  while (index < text.length && (text[index] === ' ' || text[index] === '\t')) {
+  while (index < text.length && /\s/u.test(text[index])) {
     index += 1;
   }
 

@@ -1,13 +1,13 @@
 {
-  "name": "aligned-style-formatter",
-  "displayName": "Aligned Style Formatter",
-  "description": "VS Code formatter for aligned imports, enums, object literals and JSX props.",
+  "name": "sirius-alignment-formatter",
+  "displayName": "Sirius Alignment Formatter",
+  "description": "VS Code formatter for aligned imports, enums, variable declarations, object literals and JSX props.",
   "version": "0.1.0",
   "publisher": "local",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/local/aligned-style-formatter.git"
+    "url": "https://github.com/MiggRabbid/sirius-alignment-formatter.git"
   },
   "vsce": {
     "dependencies": false
@@ -37,31 +37,31 @@
   },
   "contributes": {
     "configuration": {
-      "title": "Aligned Style Formatter",
+      "title": "Sirius Alignment Formatter",
       "properties": {
-        "alignedStyleFormatter.enable": {
+        "siriusAlignmentFormatter.enable": {
           "type": "boolean",
           "default": true,
-          "description": "Enable Aligned Style Formatter."
+          "description": "Enable Sirius Alignment Formatter."
         },
-        "alignedStyleFormatter.importFromMinColumn": {
+        "siriusAlignmentFormatter.importFromMinColumn": {
           "type": "number",
           "default": 40,
           "minimum": 1,
           "description": "Minimum zero-based column for the from keyword in import declarations."
         },
-        "alignedStyleFormatter.importFromMaxColumn": {
+        "siriusAlignmentFormatter.importFromMaxColumn": {
           "type": "number",
           "default": 60,
           "minimum": 1,
           "description": "Maximum zero-based column for the from keyword before long named imports are expanded to multiline."
         },
-        "alignedStyleFormatter.alignObjects": {
+        "siriusAlignmentFormatter.alignObjects": {
           "type": "boolean",
           "default": true,
           "description": "Align object literal property values by colon."
         },
-        "alignedStyleFormatter.alignJsxProps": {
+        "siriusAlignmentFormatter.alignJsxProps": {
           "type": "boolean",
           "default": true,
           "description": "Align JSX attribute equal signs in multiline opening elements."

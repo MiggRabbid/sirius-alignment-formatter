@@ -8,4 +8,5 @@ node_modules/**
 tsconfig*.json
 esbuild.mjs
 package-lock.json
-aligned-style-formatter-*.vsix
+DEVELOPMENT.md
+sirius-alignment-formatter-*.vsix

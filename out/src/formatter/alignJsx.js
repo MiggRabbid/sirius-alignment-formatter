@@ -10,8 +10,9 @@ function alignJsxProps(text, ast) {
         if (node.type !== 'JSXOpeningElement' || node.loc?.start.line === node.loc?.end.line || !Array.isArray(node.attributes)) {
             return;
         }
+        const propStartColumn = getPropStartColumn(node);
         const attributes = node.attributes
-            .map((attribute) => toAlignableJsxAttribute(text, attribute, lineStarts))
+            .map((attribute) => toAlignableJsxAttribute(text, attribute, lineStarts, propStartColumn))
             .filter((attribute) => Boolean(attribute));
         for (const group of splitConsecutiveGroups(attributes)) {
             changes.push(...alignJsxGroup(text, group));
@@ -19,7 +20,14 @@ function alignJsxProps(text, ast) {
     });
     return (0, print_1.applyTextChanges)(text, changes);
 }
-function toAlignableJsxAttribute(text, attribute, lineStarts) {
+function getPropStartColumn(openingElement) {
+    const firstAttribute = Array.isArray(openingElement.attributes) ? openingElement.attributes[0] : null;
+    if (!firstAttribute?.loc || firstAttribute.loc.start.line !== openingElement.loc?.start.line) {
+        return null;
+    }
+    return firstAttribute.loc.start.column;
+}
+function toAlignableJsxAttribute(text, attribute, lineStarts, propStartColumn) {
     if (attribute.type !== 'JSXAttribute' || !attribute.value || !attribute.loc || !attribute.name) {
         return null;
     }
@@ -28,11 +36,9 @@ function toAlignableJsxAttribute(text, attribute, lineStarts) {
     }
     const lineNumber = attribute.loc.start.line - 1;
     const [lineStart, lineEnd] = (0, print_1.getLineBounds)(text, lineNumber, lineStarts);
-    const line = text.slice(lineStart, lineEnd);
-    const indent = (0, print_1.getIndent)(line);
-    if (attribute.loc.start.column !== indent.length) {
-        return null;
-    }
+    const prefix = propStartColumn === null || attribute.loc.start.column === propStartColumn
+        ? text.slice(lineStart, attribute.name.start)
+        : ' '.repeat(propStartColumn);
     const operatorSegment = text.slice(attribute.name.end, attribute.value.start);
     if (!operatorSegment.includes('=') || (0, print_1.hasCommentMarker)(operatorSegment)) {
         return null;
@@ -41,8 +47,8 @@ function toAlignableJsxAttribute(text, attribute, lineStarts) {
         lineNumber,
         lineStart,
         lineEnd,
-        indent,
-        name: text.slice(lineStart + indent.length, attribute.name.end).trimEnd(),
+        prefix,
+        name: text.slice(attribute.name.start, attribute.name.end).trimEnd(),
         valueStart: attribute.value.start
     };
 }
@@ -57,7 +63,7 @@ function alignJsxGroup(text, group) {
         return {
             start: attribute.lineStart,
             end: attribute.lineEnd,
-            text: `${attribute.indent}${attribute.name}${padding}= ${value}`
+            text: `${attribute.prefix}${attribute.name}${padding}= ${value}`
         };
     });
 }

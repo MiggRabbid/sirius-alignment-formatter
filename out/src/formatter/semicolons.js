@@ -73,7 +73,7 @@ function hasSemicolon(text, end) {
         return true;
     }
     let index = end;
-    while (index < text.length && (text[index] === ' ' || text[index] === '\t')) {
+    while (index < text.length && /\s/u.test(text[index])) {
         index += 1;
     }
     return text[index] === ';';

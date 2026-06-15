@@ -1,7 +1,27 @@
 import assert from 'node:assert/strict';
 import { formatCode } from '../../src/formatter';
 
-describe('Aligned Style Formatter', () => {
+describe('Sirius Alignment Formatter', () => {
+  it('formats indentation to four spaces before other passes', () => {
+    const input = [
+      'const item = {',
+      '\ttitle:getTitle(),',
+      '  name: id,',
+      '}',
+      ''
+    ].join('\n');
+
+    const expected = [
+      'const item = {',
+      '    title: getTitle(),',
+      '    name:  id,',
+      '};',
+      ''
+    ].join('\n');
+
+    assert.equal(formatCode(input, undefined, 'typescript'), expected);
+  });
+
   it('formats and aligns imports', () => {
     const input = [
       "import {  Column, Row  } from '@sirius/ui-lib/src/@types/table'",
@@ -117,6 +137,94 @@ describe('Aligned Style Formatter', () => {
       '        hardWidthDisabled',
       '    />',
       ');',
+      ''
+    ].join('\n');
+
+    assert.equal(formatCode(input, undefined, 'typescriptreact'), expected);
+  });
+
+  it('aligns JSX props from the first prop on the opening element line', () => {
+    const input = [
+      'const view = (',
+      '    <Table className = {block}',
+      '        EmptyElement = {null}',
+      '        checkedRows = {[]}',
+      '        cols = {[]}',
+      '',
+      '        hasRowEditStickyLast',
+      '    />',
+      ')',
+      ''
+    ].join('\n');
+
+    const expected = [
+      'const view = (',
+      '    <Table className    = {block}',
+      '           EmptyElement = {null}',
+      '           checkedRows  = {[]}',
+      '           cols         = {[]}',
+      '',
+      '        hasRowEditStickyLast',
+      '    />',
+      ');',
+      ''
+    ].join('\n');
+
+    assert.equal(formatCode(input, undefined, 'typescriptreact'), expected);
+  });
+
+  it('aligns consecutive variable declarations with typed hook initializers', () => {
+    const input = [
+      'const [allCols, setAllCols] = useState<Array<Column>>(getColsByTable(table));',
+      'const [rows, setRows] = useState<Array<Row>>(getRowsByTable(table));',
+      "const hasTable  =  table && 'cols' in table;",
+      ''
+    ].join('\n');
+
+    const expected = [
+      'const [allCols, setAllCols] = useState<Array<Column>>(getColsByTable(table));',
+      'const [rows, setRows]       = useState<Array<Row>>(getRowsByTable(table));',
+      "const hasTable              =  table && 'cols' in table;",
+      ''
+    ].join('\n');
+
+    assert.equal(formatCode(input, undefined, 'typescriptreact'), expected);
+  });
+
+  it('does not duplicate semicolons placed on the next line', () => {
+    const input = [
+      "const EmptyElement = () =>",
+      "    <TableEmpty message={'Пока нет ни одной категории'} icon={'confirmation_number'} hideActionBtn />",
+      ';',
+      '',
+      'const emptyBtn: ActionButton | null =',
+      '    hasAppliedFilters',
+      '        ? {',
+      "            label:    'Очистить запрос',",
+      "            icon:     'highlight_off',",
+      "            mode:     'outlined',",
+      '            onAction: onFilterClear,',
+      '        }',
+      '        : null',
+      '    ;',
+      ''
+    ].join('\n');
+
+    const expected = [
+      "const EmptyElement = () =>",
+      "    <TableEmpty message={'Пока нет ни одной категории'} icon={'confirmation_number'} hideActionBtn />",
+      ';',
+      '',
+      'const emptyBtn: ActionButton | null =',
+      '    hasAppliedFilters',
+      '        ? {',
+      "            label:    'Очистить запрос',",
+      "            icon:     'highlight_off',",
+      "            mode:     'outlined',",
+      '            onAction: onFilterClear,',
+      '        }',
+      '        : null',
+      '    ;',
       ''
     ].join('\n');
 
