@@ -1,0 +1,84 @@
+{
+  "name": "aligned-style-formatter",
+  "displayName": "Aligned Style Formatter",
+  "description": "VS Code formatter for aligned imports, enums, object literals and JSX props.",
+  "version": "0.1.0",
+  "publisher": "local",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/local/aligned-style-formatter.git"
+  },
+  "vsce": {
+    "dependencies": false
+  },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Formatters"
+  ],
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact"
+  ],
+  "main": "./dist/extension.js",
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "package": "node esbuild.mjs --production",
+    "check-types": "tsc --noEmit",
+    "compile-tests": "tsc -p tsconfig.test.json",
+    "compile": "npm run check-types && npm run build && npm run compile-tests",
+    "test": "npm run compile && vscode-test"
+  },
+  "contributes": {
+    "configuration": {
+      "title": "Aligned Style Formatter",
+      "properties": {
+        "alignedStyleFormatter.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Aligned Style Formatter."
+        },
+        "alignedStyleFormatter.importFromMinColumn": {
+          "type": "number",
+          "default": 40,
+          "minimum": 1,
+          "description": "Minimum zero-based column for the from keyword in import declarations."
+        },
+        "alignedStyleFormatter.importFromMaxColumn": {
+          "type": "number",
+          "default": 60,
+          "minimum": 1,
+          "description": "Maximum zero-based column for the from keyword before long named imports are expanded to multiline."
+        },
+        "alignedStyleFormatter.alignObjects": {
+          "type": "boolean",
+          "default": true,
+          "description": "Align object literal property values by colon."
+        },
+        "alignedStyleFormatter.alignJsxProps": {
+          "type": "boolean",
+          "default": true,
+          "description": "Align JSX attribute equal signs in multiline opening elements."
+        }
+      }
+    }
+  },
+  "devDependencies": {
+    "@babel/parser": "^7.26.10",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.14.10",
+    "@types/vscode": "^1.90.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "@vscode/vsce": "^3.1.0",
+    "esbuild": "^0.24.0",
+    "mocha": "^10.7.3",
+    "typescript": "^5.5.4"
+  }
+}

@@ -1,0 +1,8 @@
+.agents/
+.codex/
+.vscode/
+.vscode-test/
+dist/
+.vscode-test.mjs
+node_modules/
+aligned-style-formatter-*.vsix
