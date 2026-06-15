@@ -5,4 +5,4 @@
 dist/
 .vscode-test.mjs
 node_modules/
-aligned-style-formatter-*.vsix
+sirius-alignment-formatter-*.vsix
