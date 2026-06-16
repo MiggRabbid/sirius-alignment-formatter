@@ -52,7 +52,7 @@
         },
         "siriusAlignmentFormatter.importFromMaxColumn": {
           "type": "number",
-          "default": 65,
+          "default": 70,
           "minimum": 1,
           "description": "Maximum zero-based column for the from keyword before long named imports are expanded to multiline."
         },

@@ -48,7 +48,7 @@
 {
   "siriusAlignmentFormatter.enable": true,
   "siriusAlignmentFormatter.importFromMinColumn": 40,
-  "siriusAlignmentFormatter.importFromMaxColumn": 65,
+  "siriusAlignmentFormatter.importFromMaxColumn": 70,
   "siriusAlignmentFormatter.alignObjects": true,
   "siriusAlignmentFormatter.alignJsxProps": true
 }
@@ -58,7 +58,7 @@
 | --- | ---: | --- |
 | `siriusAlignmentFormatter.enable` | `true` | Включает или выключает форматтер. |
 | `siriusAlignmentFormatter.importFromMinColumn` | `40` | Минимальная колонка для `from` в import declarations. |
-| `siriusAlignmentFormatter.importFromMaxColumn` | `65` | Максимальная колонка для `from`, после которой длинные named imports переводятся в многострочный вид. |
+| `siriusAlignmentFormatter.importFromMaxColumn` | `70` | Максимальная колонка для `from`, после которой длинные named imports переводятся в многострочный вид. |
 | `siriusAlignmentFormatter.alignObjects` | `true` | Выравнивает значения свойств в object literal по `:`. |
 | `siriusAlignmentFormatter.alignJsxProps` | `true` | Выравнивает `=` у JSX props в многострочных opening elements. |
 
