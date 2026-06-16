@@ -2,7 +2,7 @@
   "name": "sirius-alignment-formatter",
   "displayName": "Sirius Alignment Formatter",
   "description": "VS Code formatter for aligned imports, enums, variable declarations, object literals and JSX props.",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "publisher": "local",
   "license": "MIT",
   "repository": {
