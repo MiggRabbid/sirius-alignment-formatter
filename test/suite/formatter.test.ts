@@ -22,6 +22,38 @@ describe('Sirius Alignment Formatter', () => {
     assert.equal(formatCode(input, undefined, 'typescript'), expected);
   });
 
+  it('preserves multiline union type alignment', () => {
+    const input = [
+      'export type LanguageKey = Spec.Office.Concert.Language |',
+      '                                              Spec.Office.Lib.Language     |',
+      '                                              Spec.News.Lib.Language      |',
+      '                                              Spec.News.Office.Language;',
+      ''
+    ].join('\n');
+
+    const expected = [
+      'export type LanguageKey = Spec.Office.Concert.Language |',
+      '                                              Spec.Office.Lib.Language     |',
+      '                                              Spec.News.Lib.Language      |',
+      '                                              Spec.News.Office.Language;',
+      ''
+    ].join('\n');
+
+    assert.equal(formatCode(input, undefined, 'typescript'), expected);
+  });
+
+  it('keeps already formatted multiline union type alignment idempotent', () => {
+    const formatted = [
+      'export type LanguageKey = Spec.Office.Concert.Language |',
+      '                                              Spec.Office.Lib.Language        |',
+      '                                              Spec.News.Lib.Language         |',
+      '                                              Spec.News.Office.Language;',
+      ''
+    ].join('\n');
+
+    assert.equal(formatCode(formatted, undefined, 'typescript'), formatted);
+  });
+
   it('formats and aligns imports', () => {
     const input = [
       "import {  Column, Row  } from '@sirius/ui-lib/src/@types/table'",

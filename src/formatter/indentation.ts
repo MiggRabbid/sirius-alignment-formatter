@@ -16,10 +16,22 @@ function formatLineIndentation(line: string): string {
 
   const indent = match[0];
   const indentWidth = getIndentWidth(indent);
-  const normalizedWidth = Math.ceil(indentWidth / INDENT_SIZE) * INDENT_SIZE;
+  const normalizedWidth = getNormalizedIndentWidth(indent, indentWidth);
   const normalizedIndent = ' '.repeat(normalizedWidth);
 
   return normalizedIndent === indent ? line : normalizedIndent + line.slice(indent.length);
+}
+
+function getNormalizedIndentWidth(indent: string, indentWidth: number): number {
+  if (indent.includes('\t')) {
+    return indentWidth;
+  }
+
+  if (indentWidth < INDENT_SIZE) {
+    return INDENT_SIZE;
+  }
+
+  return indentWidth;
 }
 
 function getIndentWidth(indent: string): number {
