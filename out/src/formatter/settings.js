@@ -5,7 +5,7 @@ exports.normalizeSettings = normalizeSettings;
 exports.DEFAULT_SETTINGS = {
     enable: true,
     importFromMinColumn: 40,
-    importFromMaxColumn: 60,
+    importFromMaxColumn: 65,
     alignObjects: true,
     alignJsxProps: true
 };

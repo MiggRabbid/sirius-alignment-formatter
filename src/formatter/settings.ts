@@ -9,7 +9,7 @@ export interface FormatterSettings {
 export const DEFAULT_SETTINGS: FormatterSettings = {
   enable: true,
   importFromMinColumn: 40,
-  importFromMaxColumn: 60,
+  importFromMaxColumn: 65,
   alignObjects: true,
   alignJsxProps: true
 };
