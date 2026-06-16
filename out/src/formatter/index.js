@@ -4,6 +4,7 @@ exports.formatCode = formatCode;
 const alignEnum_1 = require("./alignEnum");
 const alignJsx_1 = require("./alignJsx");
 const alignObject_1 = require("./alignObject");
+const alignTypes_1 = require("./alignTypes");
 const alignVariables_1 = require("./alignVariables");
 const importLayout_1 = require("./importLayout");
 const indentation_1 = require("./indentation");
@@ -43,7 +44,8 @@ function getFormatterPasses(settings) {
         (text) => (0, indentation_1.formatIndentation)(text),
         (text, parseResult) => (0, importLayout_1.formatImports)(text, parseResult.ast, settings),
         (text, parseResult) => (0, alignEnum_1.alignEnums)(text, parseResult.ast),
-        (text, parseResult) => (0, alignVariables_1.alignVariables)(text, parseResult.ast)
+        (text, parseResult) => (0, alignVariables_1.alignVariables)(text, parseResult.ast),
+        (text, parseResult) => (0, alignTypes_1.alignTypeLiterals)(text, parseResult.ast)
     ];
     if (settings.alignObjects) {
         passes.push((text, parseResult) => (0, alignObject_1.alignObjects)(text, parseResult.ast));

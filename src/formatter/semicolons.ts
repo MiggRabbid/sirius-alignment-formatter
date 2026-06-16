@@ -30,12 +30,14 @@ function shouldEndWithSemicolon(node: AnyNode, parent: AnyNode | null): boolean 
     case 'ContinueStatement':
     case 'DebuggerStatement':
     case 'DoWhileStatement':
-    case 'TSTypeAliasDeclaration':
     case 'ClassProperty':
     case 'ClassPrivateProperty':
     case 'PropertyDefinition':
     case 'ClassAccessorProperty':
       return true;
+
+    case 'TSTypeAliasDeclaration':
+      return parent?.type !== 'ExportNamedDeclaration';
 
     case 'VariableDeclaration':
       return !isForHeaderDeclaration(node, parent) && parent?.type !== 'ExportNamedDeclaration';

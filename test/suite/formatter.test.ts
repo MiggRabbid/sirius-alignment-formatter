@@ -139,6 +139,104 @@ describe('Sirius Alignment Formatter', () => {
     assert.equal(formatCode(input, undefined, 'typescript'), expected);
   });
 
+  it('aligns type literal properties without duplicating export type semicolons', () => {
+    const input = [
+      "import {DEVICE_TYPE} from '@sirius/ui-shared/src/components/News/values';",
+      '',
+      'export type LanguageKey = Spec.Office.Concert.Language;',
+      '',
+      'export type PreviewInfoCardsListProps = {',
+      '    className?: string;',
+      '    data: Spec.Office.Concert.InfoBoardList;',
+      '}',
+      '',
+      'export type PreviewContentProps = {',
+      '    data?: Spec.Office.Concert.AfishaProjectPreviewProjectData;',
+      '    deviceType: DEVICE_TYPE;',
+      '};',
+      '',
+      'export type ButtonsPanelProps = {',
+      '    buttons?: Spec.Office.Concert.Buttons;',
+      '    confirmLabel?: string;',
+      '    onAction: (action: Spec.Office.Concert.ButtonListItemType) => () => void;',
+      '};',
+      ''
+    ].join('\n');
+
+    const expected = [
+      importLine('import {DEVICE_TYPE}', "'@sirius/ui-shared/src/components/News/values'"),
+      '',
+      'export type LanguageKey = Spec.Office.Concert.Language;',
+      '',
+      'export type PreviewInfoCardsListProps = {',
+      '    className?: string;',
+      '    data:       Spec.Office.Concert.InfoBoardList;',
+      '};',
+      '',
+      'export type PreviewContentProps = {',
+      '    data?:      Spec.Office.Concert.AfishaProjectPreviewProjectData;',
+      '    deviceType: DEVICE_TYPE;',
+      '};',
+      '',
+      'export type ButtonsPanelProps = {',
+      '    buttons?:      Spec.Office.Concert.Buttons;',
+      '    confirmLabel?: string;',
+      '    onAction:      (action: Spec.Office.Concert.ButtonListItemType) => () => void;',
+      '};',
+      ''
+    ].join('\n');
+
+    assert.equal(formatCode(input, undefined, 'typescript'), expected);
+  });
+
+  it('aligns interface properties', () => {
+    const input = [
+      'export interface PreviewContentProps {',
+      '    data?: Spec.Office.Concert.AfishaProjectPreviewProjectData;',
+      '    deviceType: DEVICE_TYPE;',
+      '};',
+      ''
+    ].join('\n');
+
+    const expected = [
+      'export interface PreviewContentProps {',
+      '    data?:      Spec.Office.Concert.AfishaProjectPreviewProjectData;',
+      '    deviceType: DEVICE_TYPE;',
+      '};',
+      ''
+    ].join('\n');
+
+    assert.equal(formatCode(input, undefined, 'typescript'), expected);
+  });
+
+  it('formats files that combine multiline union aliases and intersection type literals', () => {
+    const input = [
+      'export type LanguageKey = Spec.Office.Concert.Language |',
+      '                            Spec.Office.Lib.Language     |',
+      '                            Spec.News.Lib.Language       |',
+      '                            Spec.News.Office.Language;',
+      '',
+      'export type ProjectInfoCardsProps = {',
+      '    data?: Spec.Office.Concert.InfoBoardList;',
+      '} & MaybeHasClassName;',
+      ''
+    ].join('\n');
+
+    const expected = [
+      'export type LanguageKey = Spec.Office.Concert.Language |',
+      '                            Spec.Office.Lib.Language     |',
+      '                            Spec.News.Lib.Language       |',
+      '                            Spec.News.Office.Language;',
+      '',
+      'export type ProjectInfoCardsProps = {',
+      '    data?: Spec.Office.Concert.InfoBoardList;',
+      '} & MaybeHasClassName;',
+      ''
+    ].join('\n');
+
+    assert.equal(formatCode(input, undefined, 'typescript'), expected);
+  });
+
   it('aligns JSX props in multiline opening tags', () => {
     const input = [
       'const view = (',
